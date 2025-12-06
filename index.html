@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inflation Incremental v1.00</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="break_eternity.js"></script>
+    <script src="format.js"></script>
+</head>
+<body>
+    <div id="app">
+        Inflation Incremental v0.01 | <a href="https://discord.gg/5AqHcCVQpm" title="Official Discord server" target="_blank">Project Element</a> <br> <br>
+        <p>You have <b>{{ Format(player.points) }} Points</b> <small>(x{{Format(getMulti(multi.points))}}/s)</small></p>
+        <p>Softcap Level {{ player.softcapLevel }}. Next gain softcap at {{softcapLevelLabel[player.softcapLevel]}} Points</p>
+        <div class="topbar">
+            <button>Points</button>
+        </div>
+        <div class="points-tab">
+            <div class="point-upgrades">
+                <button id="p-1" style="cursor: pointer;" onclick="buyUpgrade('points', 1)">
+                    <div class="upgrade-header">
+                        <div>p#1</div>
+                        <div>Level {{Format(upgrades.points['1'].level)}}</div>
+                    </div>
+                    <div class="upgrade-content">
+                        <div><b style="font-size: 15px; font-weight: 900">Boost Point gain by x1.35 per level</b></div>
+                        <div>Effect: x{{Format(multi.points.mul_upg_p1)}} Points</div>
+                        <div>Cost: {{Format(upgrades.points['1'].cost)}} Points</div>
+                    </div>
+                </button>
+                <button id="p-2" style="cursor: pointer;" onclick="buyUpgrade('points', 2)">
+                    <div class="upgrade-header">
+                        <div>p#2</div>
+                        <div>Level {{Format(upgrades.points['2'].level)}}</div>
+                    </div>
+                    <div class="upgrade-content">
+                        <div><b style="font-size: 15px; font-weight: 900">1st Softcap Level starts x5 later per level</b></div>
+                        <div>Effect: x{{Format(multi.points.softcap_start['1'].mul_upg_p2)}} later</div>
+                        <div>Cost: {{Format(upgrades.points['2'].cost)}} Points</div>
+                    </div>
+                </button>
+            </div>
+            On any upgrade purchase reset your Points
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+    <script src="vue.js"></script>
+</body>
+</html>
