@@ -2,7 +2,7 @@
 An active incremental game about inflation! Get massive numbers on your first hour!
 
 # [=] Update logs:
-**v0.02 | 07/12/2025**
+- **v0.02 | 07/12/2025**
 
 [+] Game saving
 [+] Added cap to p#2
@@ -12,16 +12,9 @@ An active incremental game about inflation! Get massive numbers on your first ho
 
 **Endgame: save as v0.01**
 
-a
 
 
-
-
-
-
-a
-
-**v0.01 | 06/12/2025**
+- **v0.01 | 06/12/2025**
 
 [+] Game
 
