@@ -18,7 +18,7 @@ An active incremental game about inflation! Get massive numbers on your first ho
 
 
 
-
+-
 **v0.01 | 06/12/2025**
 
 [+] Game
