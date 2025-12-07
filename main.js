@@ -3,28 +3,35 @@ const pointGrowthFactor = 33/1000
 
 softcapLevelLabel = [
     Format(getMulti(multi.points.softcap_start['1'])),
-    Format('1e50'),
+    Format('1e40'),
     `${Format('1.79e308')} fr`,
     "inf"
+]
+
+softcapLevelFormulas = [
+    function() {multi.points.div_softcap1 = player.points.div(getMulti(multi.points.softcap_start['1'])).root(8)},
+    function() {multi.points.div_softcap2 = player.points.log10().sub(39).pow(1.5)},
+    function() {multi.points.root_softcap3 = player.points.log10().sub(308.25).root(3)},
+    function() {return},
 ]
 
 function update(){
     if (player.points.gte('1.79e308')) {
         player.softcapLevel = 3
-        multi.points.root_softcap3 = player.points.log10().sub(308.25).root(3)
-    } else if (player.points.gte('1e50')) {
+    } else if (player.points.gte('1e40')) {
         player.softcapLevel = 2
-        multi.points.div_softcap2 = player.points.log10().sub(49).pow(1.5)
     } else if (player.points.gte(getMulti(multi.points.softcap_start['1']))) {
         player.softcapLevel = 1
-        multi.points.div_softcap1 = player.points.div(getMulti(multi.points.softcap_start['1'])).root(8)
     } else {
         player.softcapLevel = 0
     }
 
-    multi.points.mul_upg_p1 = E(1.35).pow(upgrades.points['1'].level)
+    for (i = 0; i < player.softcapLevel; i++) {
+        softcapLevelFormulas[i]()
+    }
+
+    multi.points.mul_upg_p1 = E(1.4).pow(upgrades.points['1'].level)
     multi.points.softcap_start['1'].mul_upg_p2 = E(5).pow(upgrades.points['2'].level)
-    
 }
 
 function update2(){
@@ -42,6 +49,25 @@ function update2(){
     }
 
     softcapLevelLabel[0] = Format(getMulti(multi.points.softcap_start['1']))
+
+    for (const layer in upgrades) {
+        for (const upgradeId in upgrades[layer]) {
+            const id = layer+"-"+upgradeId
+            const upgradeElement = document.getElementById(id)
+            const upgrade = upgrades[layer][upgradeId]
+            const currency = player[layer]
+            
+            if (upgrade.level.gte(upgrade.levelCap)) {
+                upgradeElement.className = "maxed"
+            } else {
+                if (currency.gte(upgrade.cost)) {
+                    upgradeElement.className = "canafford"
+                } else {
+                    upgradeElement.className = "cannotafford"
+                }
+            }
+        }
+    }
 }
 
 /*function unpackStringToStat(str) {
@@ -58,37 +84,29 @@ function update2(){
 function buyUpgrade(type, id) {
     const upgrade = upgrades[type][id]
     const cost = upgrade.cost
-    const level = upgrade.level
-    const cap = upgrade.levelCap
     //let currency = unpackStringToStat(upgrade.currency)
-    let currency = player[type]
     const doCost = upgrade.doCost
+    const upgradeForm = upgradeFormulas[type][id]
 
-    if (currency.lt(cost)) return
-    if (cap != "none") {
-        if (level.gte(cap)) return
-    }
+    if (player[type].lt(cost)) return
+    if (upgrade.level.gte(upgrade.levelCap)) return
+    console.log(type, id)
 
-    let lvlForm = upgrade.levelForm()
-    if (cap != "none") {
-        lvlForm = lvlForm.min(cap)
-    }
+    let lvlForm = upgradeForm.levelForm().min(upgrade.levelCap)
     upgrade.level = lvlForm
 
-    upgrade.cost = upgrade.costForm()
+    upgrade.cost = upgradeForm.costForm()
 
     if (doCost === 2) {
         player[type] = upgrade.resetTo
     } else if (doCost === 1) {
-        player[type] = currency.sub(upgrade.costForm(1))
+        player[type] = player[type].sub(upgradeForm.costForm(1))
     }
-
-    console.log(upgrade)
 }
 
 function gain(diff) {
     // Points
-    let base = getMulti(multi.points).pow(pointGrowthFactor)
+    let base = getMulti(multi.points).pow(diff)
     player.points = player.points.mul(base)
 }
 
@@ -99,5 +117,9 @@ function tick() {
     lastUpdate = Date.now()
 }
 
+load()
+
 setInterval(tick, 33)
 setInterval(update2, 200)
+
+setInterval(save, 3000)
