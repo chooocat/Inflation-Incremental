@@ -1,4 +1,4 @@
-# Inflation Incremental v0.01
+# Inflation Incremental by Project Element. 3rd public web game
 An active incremental game about inflation! Get massive numbers on your first hour!
 
 # [=] Update logs:
