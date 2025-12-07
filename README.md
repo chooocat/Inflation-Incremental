@@ -11,14 +11,14 @@ An active incremental game about inflation! Get massive numbers on your first ho
 [=] Visual improvements
 
 **Endgame: save as v0.01**
+a
 
 
 
 
 
 
-
--
+a
 **v0.01 | 06/12/2025**
 
 [+] Game
