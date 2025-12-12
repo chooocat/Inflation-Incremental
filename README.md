@@ -2,6 +2,18 @@
 An active incremental game about inflation! Get massive numbers on your first hour!
 
 # [=] Update logs:
+- ## **v0.10 | 12/12/2025**
+
+[+] 1 new layer!
+
+[+] Added 2 new tabs
+
+[=] Migrated from diff method to 33/1000 exponent method
+
+**Endgame: 1e150 Points**
+
+
+
 - ## **v0.02 | 07/12/2025**
 
 [+] Game saving
