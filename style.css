@@ -3,6 +3,8 @@ body {
     color: white;
     font-family: monospace;
     text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 p {
@@ -13,6 +15,85 @@ p {
 
 b {
     font-size: 20px;
+}
+
+#prestige-currency {
+    color: rgb(87, 255, 255);
+    font-weight: bold;
+}
+
+#points-currency {
+    color: white;
+    font-weight: bold;
+}
+
+.reset {
+    background-image: linear-gradient(rgb(12, 61, 70),black, black, black, rgb(12, 61, 70));
+    border: 1px rgb(0, 255, 255) solid;
+    color: white;
+    font-family: monospace;
+    font-size: 15px;
+    width: 900px;
+    text-align: center;
+    box-shadow: 0 0 10px rgb(48, 224, 255);
+    transition: all 0.5s;
+    user-select: none;
+    cursor: pointer;
+}
+
+.reset:hover {
+    background-image: linear-gradient(rgb(15, 76, 87),rgb(6, 30, 34), black, rgb(6, 30, 34), rgb(15, 76, 87));
+    border: 1px rgb(0, 255, 255) solid;
+    color: lightcyan;
+    box-shadow: 0 0 25px rgb(48, 224, 255);
+    transform: scale(1.04);
+}
+
+.point-level {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding-right: 200px;
+}
+
+.prestige-level {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding-right: 200px;
+}
+
+.level-boost {
+    color: rgb(107, 255, 107);
+    text-align: left;
+}
+
+.level-progress-container {
+    padding-left: 5px;
+    width: 600px;
+    height: 20px;
+    background-color: rgb(78, 78, 78);
+    justify-content: left;
+    align-items: center;
+    display: flex;
+    margin: 5px auto;
+}
+
+.level-progress-bar {
+    transition: all 0.1s;
+    background: #fff;
+    height: 60%;
+    width: 99%;
+}
+
+#prestige-level-bar {
+    background: #0ff;
+}
+
+.level-boost.level-progress-bar {
+    background: #74faff;
 }
 
 .topbar {
@@ -28,7 +109,7 @@ b {
 
 .topbar button {
     background-image: linear-gradient(black);
-    border: 1px white solid;
+    border: 1px rgb(117, 117, 117) solid;
     color: white;
     font-family: monospace;
     font-size: 19px;
@@ -36,18 +117,48 @@ b {
     height: 70%;
     width: 90px;
     text-align: center;
-    box-shadow: 0 0 0px white;
+    box-shadow: 0 0 0px rgb(117, 117, 117);
     transition: all 0.2s;
     user-select: none;
 }
 
 .topbar button:hover {
+    transform: scale(1.02);
+}
+
+.topbar button.points {
+    border: 1px rgb(255, 255, 255) solid;
+    color: white;
+    text-align: center;
+    box-shadow: 0 0 0px rgb(255, 255, 255);
+}
+
+.topbar button.points:hover {
     background-image: linear-gradient(0deg, rgb(95, 95, 95), black, black, rgb(95, 95, 95));
     box-shadow: 0 0 10px white;
     transform: scale(1.02);
 }
 
-.point-upgrades {
+.topbar button.prestige {
+    border: 1px rgb(48, 224, 255) solid;
+    color: rgb(48, 224, 255);
+    width: 100px;
+    box-shadow: 0 0 0px rgb(48, 224, 255);
+}
+
+.topbar button.prestige:hover {
+    background-image: linear-gradient(0deg, rgb(0, 114, 143), black, black, rgb(0, 114, 143));
+    box-shadow: 0 0 10px rgb(0, 114, 143);
+    transform: scale(1.02);
+}
+
+#topbar-2 button {
+    border: 1px rgb(48, 224, 255) solid;
+    color: rgb(48, 224, 255);
+    text-align: center;
+}
+
+#upgrades {
     height: 200px;
     width: 100%;
     display: inline-block;
@@ -59,7 +170,7 @@ b {
     position: relative;
 }
 
-.point-upgrades button {
+#upgrades button {
     background-image: linear-gradient(#1c1c1c);
     border: 3px rgb(46, 46, 46) solid;
     color: white;
@@ -72,14 +183,14 @@ b {
     transition: all 0.5s;
 }
 
-.point-upgrades button .upgrade-content {
+#upgrades button .upgrade-content {
     font-family: monospace;
     font-size: 13px;
     font-weight: 50;
     text-align: center;
 }
 
-.point-upgrades button .upgrade-header {
+#upgrades button .upgrade-header {
     color: rgb(153, 153, 153);
     text-align: left;
     font-size: 10px;
@@ -87,26 +198,26 @@ b {
     top: 4px;
 }
 
-.point-upgrades button.cannotafford:hover {
+#upgrades button.cannotafford:hover {
     background-image: linear-gradient(#2c2c2c);
     border: 3px rgb(94, 94, 94) solid;
     box-shadow: 0 0 10px rgb(95, 95, 95);
     transition: all 0.5s;
 }
 
-.point-upgrades button.canafford {
+#upgrades button.canafford {
     background-image: linear-gradient(#002c12);
     border: 3px #003b19 solid;
     box-shadow: 0 0 10px #003b19;
 }
 
-.point-upgrades button.canafford:hover {
+#upgrades button.canafford:hover {
     background-image: linear-gradient(#003f13);
     border: 3px #00581b solid;
     box-shadow: 0 0 10px #00581b;
 }
 
-.point-upgrades button.maxed {
+#upgrades button.maxed {
     background-image: linear-gradient(#5e4500);
     border: 2px #ffbb00 solid;
     box-shadow: 0 0 10px #ffce84;

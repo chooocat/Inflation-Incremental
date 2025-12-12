@@ -3,46 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inflation Incremental v0.02</title>
+    <title>Inflation Incremental v0.10</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script src="break_eternity.js"></script>
     <script src="format.js"></script>
 </head>
 <body>
+    <button onclick="hROption()" id="pre-load-hardReset">Hard Data Reset</button>
     <div id="app">
-        Inflation Incremental v0.02 | <a href="https://discord.gg/5AqHcCVQpm" title="Official Discord server" target="_blank">Project Element</a> <br> <br>
-        <p>You have <b>{{ Format(player.points) }} Points</b> <small>(x{{Format(getMulti(multi.points))}}/s)</small></p>
-        <p>Softcap Level {{ player.softcapLevel }}. Next gain softcap at {{softcapLevelLabel[player.softcapLevel]}} Points</p>
-        <div class="topbar">
-            <button>Points</button>
+        Inflation Incremental v0.10 | <a href="https://discord.gg/5AqHcCVQpm" title="Official Discord server" target="_blank">Project Element</a> <br> <br>
+        <p>You have <b>{{ Format(player.points.amount) }} Points</b> <small>(x{{Format(getMulti(multi.points))}}/s)</small></p>
+        <p>Softcap Level {{ nonSavePlayer.softcapLevel }}. Next gain softcap at {{softcapLevelLabel[nonSavePlayer.softcapLevel]}} Points</p>
+        <div class="topbar" id="topbar-1">
+            <button class="points" onclick="openTab('points', 1)">Points</button>
+            <button class="prestige" onclick="openTab('prestige', 1)">Prestige</button>
+            |
+            <button class="options" onclick="openTab('options', 1)">Options</button>
         </div>
-        <div class="points-tab">
-            <div class="point-upgrades">
+        <div id="points-tab" class="tab-1" style="display: block;">
+            <div class="point-upgrades" id="upgrades">
                 <button id="points-1" style="cursor: pointer;" onclick="buyUpgrade('points', 1)">
                     <div class="upgrade-header">
                         <div>p#1</div>
-                        <div>Level {{Format(upgrades.points['1'].level)}}</div>
+                        <div>Level {{Format(player.upgrades.points['1'].level)}}</div>
                     </div>
                     <div class="upgrade-content">
                         <div><b style="font-size: 15px; font-weight: 900">Boost Point gain by x1.4 per level</b></div>
                         <div>Effect: x{{Format(multi.points.mul_upg_p1)}} Points</div>
-                        <div>Cost: {{Format(upgrades.points['1'].cost)}} Points</div>
+                        <div>Cost: {{Format(player.upgrades.points['1'].cost)}} Points</div>
                     </div>
                 </button>
                 <button id="points-2" style="cursor: pointer;" onclick="buyUpgrade('points', 2)">
                     <div class="upgrade-header">
                         <div>p#2</div>
-                        <div>Level {{Format(upgrades.points['2'].level)}} / {{Format(upgrades.points['2'].levelCap)}}</div>
+                        <div>Level {{Format(player.upgrades.points['2'].level)}} / {{Format(player.upgrades.points['2'].levelCap)}}</div>
                     </div>
                     <div class="upgrade-content">
                         <div><b style="font-size: 15px; font-weight: 900">1st Softcap Level starts x5 later per level</b></div>
                         <div>Effect: x{{Format(multi.points.softcap_start['1'].mul_upg_p2)}} later</div>
-                        <div>Cost: {{Format(upgrades.points['2'].cost)}} Points</div>
+                        <div>Cost: {{Format(player.upgrades.points['2'].cost)}} Points</div>
+                    </div>
+                </button>
+                <button id="points-3" style="cursor: pointer;" onclick="buyUpgrade('points', 3)">
+                    <div class="upgrade-header">
+                        <div>p#3</div>
+                        <div>Level {{Format(player.upgrades.points['3'].level)}}</div>
+                    </div>
+                    <div class="upgrade-content">
+                        <div><b style="font-size: 15px; font-weight: 900">Boost Point XP by x1.3 per level</b></div>
+                        <div>Effect: x{{Format(multi.points.xp.mul_upg_p3)}} Point XP</div>
+                        <div>Cost: {{Format(player.upgrades.points['3'].cost)}} Points</div>
                     </div>
                 </button>
             </div> <br>
             On any upgrade purchase reset your Points
+        </div>
+
+        <div id="prestige-tab" class="tab-1" style="display: none;">
+            <div class="prestige" id="locked" style="display: block;">
+                <b>Reach Softcap Level 2 to unlock</b>
+            </div>
+            <div class="prestige" id="unlocked" style="display: none;">
+                <p>You have <b id="prestige-currency">{{ Format(player.prestige.points) }} Prestige Points<small> (+{{Format(nonSavePlayer.prestigePointGain)}})</small></b></p>
+                <p>which boosting Point gain by <span id="points-currency">x{{Format(multi.points.mul_prestigeBonus)}}</span></p>
+
+                <div class="topbar" id="topbar-2">
+                    <button class="prestige-main" onclick="openTab('prestige-main', 2)">Main</button>
+                    <button class="prestige-levels" onclick="openTab('prestige-levels', 2)">Levels</button>
+                </div>
+
+                <div id="prestige-main-tab" class="tab-2" style="display: block;">
+                    <p>Prestige Point Formula: log<sub>1.12</sub>(points/1e40)</p>
+                    <br>
+                    <button class="reset" id="prestige-reset" onclick="prestige()">
+                        <div style="font-size: 25px; font-weight: bold;">[ Prestige ]</div>
+                        <div>First prestige layer. Performing Prestige you reset all previous content (points, point upgrades, softcap levels). You will grant new Prestige points to process further. On first reset unlock Levels</div>
+                        <div style="padding: 4px; font-size: 20px;">{{displayPrestigeGainText}}</div>
+                        <div style="padding: 1px;">Best Prestige: {{Format(player.prestige.best)}}. Total: {{Format(player.prestige.total)}}</div>
+                    </button>
+                    <br><br><br><br>
+                    <div class="prestige-upgrades" id="upgrades">
+                        <button id="prestige-1" style="cursor: pointer;" onclick="buyUpgrade('prestige', 1)">
+                            <div class="upgrade-header">
+                                <div>pr#1</div>
+                                <div>Level {{Format(player.upgrades.prestige['1'].level)}}</div>
+                            </div>
+                            <div class="upgrade-content">
+                                <div><b style="font-size: 15px; font-weight: 900">Boost Point gain by x1.75 per level</b></div>
+                                <div>Effect: x{{Format(multi.points.mul_upg_pr1)}} Points</div>
+                                <div>Cost: {{Format(player.upgrades.prestige['1'].cost)}} Prestige Points</div>
+                            </div>
+                        </button>
+                        <button id="prestige-2" style="cursor: pointer;" onclick="buyUpgrade('prestige', 2)">
+                            <div class="upgrade-header">
+                                <div>pr#2</div>
+                                <div>Level {{Format(player.upgrades.prestige['2'].level)}}</div>
+                            </div>
+                            <div class="upgrade-content">
+                                <div><b style="font-size: 15px; font-weight: 900">Boost Point XP by x2 per level</b></div>
+                                <div>Effect: x{{Format(multi.points.xp.mul_upg_pr2)}} Point XP</div>
+                                <div>Cost: {{Format(player.upgrades.prestige['2'].cost)}} Prestige Points</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="prestige-levels-tab" class="tab-2" style="display: none;">
+                    Levels give additional boosts to stats <br><br>
+                    <div class="point-level">
+                        <div class="level-display">
+                            <b>Point Level: {{Format(player.points.level)}}</b>
+                            <p>Total Point XP: {{Format(player.points.levelXp)}} <small>(+{{Format(getMulti(multi.points.xp))}}/s) <- Base Formula: log<sub>100</sub>(points+1)</small></p>
+                            <div class="level-progress-container">
+                                <div class="level-progress-bar" id="point-level-bar"></div>
+                            </div>
+                            <label style="font-size: 15px; font-weight: bold;">{{Format(nonSavePlayer.pointXpCur)}} / {{Format(nonSavePlayer.pointXpReq)}} XP</label>
+                        </div>
+                        <div>
+                            <p style="color: rgb(107, 255, 107);">Boosts</p>
+                            <p style="color: rgb(107, 255, 107); font-size: 40px; line-height: 25px;">=></p>
+                        </div>
+                        <div class="level-boost">
+                            <p>x{{Format(multi.points.mul_pointLevelBonus)}} Points</p>
+                            <p>x{{Format(multi.points.softcap_start['1'].mul_pointLevelBonus)}} to first Softcap Level start</p>
+                            <p>x{{Format(multi.points.softcap_start['2'].mul_pointLevelBonus)}} to second Softcap Level start</p>
+                        </div>
+                    </div> <br><br><br>
+                    <div class="prestige-level">
+                        <div class="level-display">
+                            <b id="prestige-currency">Prestige Level: {{Format(player.prestige.level)}}</b>
+                            <p>Total Prestige XP: {{Format(player.prestige.levelXp)}} <small>(+{{Format(getMulti(multi.prestige.xp))}}/reset) <- Base Formula: log<sub>1.3</sub>(prestige+1)</small></p>
+                            <div class="level-progress-container">
+                                <div class="level-progress-bar" id="prestige-level-bar"></div>
+                            </div>
+                            <label style="font-size: 15px; font-weight: bold;">{{Format(nonSavePlayer.prestigeXpCur)}} / {{Format(nonSavePlayer.prestigeXpReq)}} XP</label>
+                        </div>
+                        <div>
+                            <p style="color: rgb(107, 255, 107);">Boosts</p>
+                            <p style="color: rgb(107, 255, 107); font-size: 40px; line-height: 25px;">=></p>
+                        </div>
+                        <div class="level-boost">
+                            <p>x{{Format(multi.prestige.mul_prestigeLevelBonus)}} Prestige Points</p>
+                            <p>x{{Format(multi.points.xp.mul_prestigeLevelBonus)}} Point XP</p>
+                            <p>+{{Format(player.prestige.level.div(100))}} to p#1 and pr#1 effect bases</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="options-tab" class="tab-1" style="display: none;">
+            <button onclick="exportData()">Export Data</button>
+            <button onclick="importData()">Import Data</button>
+            <button onclick="hROption()">Hard Data Reset</button>
+            <br><br><br><br><br>
+            <p>Game created by ari/Project Element</p>
         </div>
     </div>
 
